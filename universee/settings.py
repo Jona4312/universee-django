@@ -3,13 +3,13 @@ Django settings for universee project.
 """
 
 from pathlib import Path
-import os
-import dj_database_url # <--- Importado para la base de datos
+import os # Asegúrate que 'os' esté importado
+import dj_database_url
 
-# --- ¡NUEVO! Carga las variables del archivo .env ---
+# --- Carga las variables del archivo .env (Necesario para SECRET_KEY, etc.) ---
 from dotenv import load_dotenv
 load_dotenv()
-# --- FIN NUEVO ---
+# --- FIN CARGA .env ---
 
 
 # =============================
@@ -125,10 +125,17 @@ USE_I1N = True
 USE_TZ = True
 
 # =============================
-# ARCHIVOS ESTÁTICOS & MEDIA (AJUSTADO PARA WHITENOISE)
+# ARCHIVOS ESTÁTICOS & MEDIA (CORRECCIÓN APLICADA AQUÍ)
 # =============================
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# DIRECTORIOS DONDE DJANGO BUSCA ARCHIVOS ESTÁTICOS EN DESARROLLO
+# Usamos os.path.join para mayor compatibilidad entre Windows y Linux.
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'), 
+]
+
+# DONDE SE RECOLECTARÁN LOS ARCHIVOS PARA PRODUCCIÓN
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # WhiteNoise
