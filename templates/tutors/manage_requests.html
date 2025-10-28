@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Gestionar mis Tutorías · UniversoE{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <h1 class="fw-bold display-5">📚 Gestionar mis Tutorías</h1>
+            <p class="lead text-muted">Aquí puedes ver y administrar las solicitudes de tutoría que has recibido.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-white border-0 py-3">
+            <h3 class="mb-0">Solicitudes Pendientes</h3>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for req in pending_requests %}
+                <div class="list-group-item p-3">
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-7">
+                            <h5 class="fw-bold mb-1">
+                                {{ req.student.first_name|default:req.student.username }}
+                            </h5>
+                            <p class="text-muted mb-2">
+                                <small>Enviada el {{ req.created_at|date:"d M, Y \a \l\a\s H:i" }}</small>
+                            </p>
+                            <p class="bg-light p-3 rounded-3 mb-0">
+                                {{ req.message|linebreaksbr }}
+                            </p>
+                        </div>
+                        
+                        <div class="col-md-5 text-md-end">
+                            <form method="POST" class="d-flex gap-2 justify-content-md-end">
+                                {% csrf_token %}
+                                <input type="hidden" name="request_id" value="{{ req.id }}">
+                                
+                                <button type="submit" name="new_status" value="accepted" class="btn btn-success">
+                                    Aceptar
+                                </button>
+                                <button type="submit" name="new_status" value="rejected" class="btn btn-danger">
+                                    Rechazar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="list-group-item p-5 text-center">
+                    <h5 class="text-muted">No tienes solicitudes pendientes por ahora.</h5>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white border-0 py-3">
+            <h3 class="mb-0">Historial de Solicitudes</h3>
+        </div>
+        <div class="list-group list-group-flush">
+            {% for req in other_requests %}
+                <div class="list-group-item p-3">
+                    <div class="row align-items-center g-3">
+                        <div class="col-md-7">
+                            <h5 class="fw-bold mb-1">
+                                {{ req.student.first_name|default:req.student.username }}
+                            </h5>
+                            <p class="text-muted mb-2">
+                                <small>Última actualización: {{ req.updated_at|date:"d M, Y" }}</Ssmall>
+                            </p>
+                            <p class="bg-light p-3 rounded-3 mb-0">
+                                {{ req.message|linebreaksbr }}
+                            </p>
+                        </div>
+                        
+                        <div class="col-md-5 text-md-end">
+                            {% if req.status == 'accepted' %}
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="request_id" value="{{ req.id }}">
+                                    <button type="submit" name="new_status" value="completed" class="btn btn-primary">
+                                        Marcar como Completada ✅
+                                    </button>
+                                </form>
+                            {% elif req.status == 'completed' %}
+                                <span class="badge fs-6 bg-success-subtle text-success-emphasis border border-success-subtle">
+                                    Completada
+                                </span>
+                            {% elif req.status == 'rejected' %}
+                                <span class="badge fs-6 bg-danger-subtle text-danger-emphasis border border-danger-subtle">
+                                    Rechazada
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="list-group-item p-5 text-center">
+                    <h5 class="text-muted">Aún no tienes un historial de solicitudes.</h5>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

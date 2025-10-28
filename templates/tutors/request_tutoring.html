@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %} {% block title %}Solicitar Tutoría a {{ tutor_profile.user.first_name|default:tutor_profile.user.username }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+
+                    <h1 class="card-title fw-bold mb-1">📬 Solicitar Tutoría</h1>
+                    <p class="lead text-muted mb-4">
+                        Estás a punto de contactar a <strong>{{ tutor_profile.user.first_name|default:tutor_profile.user.username }}</strong>.
+                    </p>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {{ form.message|as_crispy_field }}
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Enviar Solicitud
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

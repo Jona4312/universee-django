@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard · UniversoE{% endblock %}
+
+{% block content %}
+<section class="dash-hero">
+  <h2 class="dash-hello">Hola, {{ user.first_name|default:user.username }} 👋</h2>
+  <p class="dash-sub">¿Qué quieres estudiar hoy?</p>
+
+  <form class="dash-search" method="get" action="">
+    <input class="dash-input" type="text" name="q" value="{{ q }}" placeholder="Buscar apuntes, dudas o tutorías…" />
+    <button class="dash-btn" type="submit">Buscar</button>
+
+    <a class="dash-btn dash-btn-alt"
+       href="{% url 'guia_inteligente' %}{% if q %}?tema={{ q|urlencode }}{% endif %}"
+       title="Generar una guía de estudio con IA">
+      🧠 Guía inteligente
+    </a>
+  </form>
+
+  <div class="quick-actions">
+    <a href="{% url 'recursos_subir' %}" class="chip">
+      <span class="chip-emoji">📘</span>
+      <span class="chip-text">Subir apunte</span>
+    </a>
+    <a href="{% url 'forum_index' %}" class="chip">
+      <span class="chip-emoji">🚀</span>
+      <span class="chip-text">Lanzar una Duda</span>
+    </a>
+    <a href="{% url 'tutor_list' %}" class="chip">
+      <span class="chip-emoji">🧑‍🏫</span>
+      <span class="chip-text">Buscar tutor</span>
+    </a>
+    <a href="#" class="chip">
+      <span class="chip-emoji">🤝</span>
+      <span class="chip-text">Estudio grupal</span>
+    </a>
+  </div>
+</section>
+
+{% if q %}
+  <section class="dash-results">
+    <h3 class="dash-sec-title">Resultados para “{{ q }}”</h3>
+    {% if results %}
+      <ul class="dash-list">
+        {% for r in results %}
+          <li class="dash-item">
+            <a class="dash-link" href="{% url 'recurso_detalle' area_slug=r.ramo.carrera.area.slug carrera_slug=r.ramo.carrera.slug ramo_slug=r.ramo.slug recurso_slug=r.slug %}">
+              {{ r.titulo }}
+            </a>
+            <span class="dash-meta">· {{ r.ramo.nombre }} · {{ r.ramo.carrera.nombre }} · {{ r.get_formato_display }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="dash-empty">No se encontraron apuntes para tu búsqueda.</p>
+    {% endif %}
+  </section>
+{% endif %}
+
+<style>
+.dash-hero{max-width:980px;margin:18px auto;padding:10px 16px}
+.dash-hello{font-weight:900;letter-spacing:-.02em;margin:0 0 6px}
+.dash-sub{color:#64748b;margin:0 0 14px}
+.dash-search{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap}
+.dash-input{flex:1;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;font-size:15px;min-width:260px}
+.dash-btn{border:0;border-radius:12px;padding:0 18px;height:44px;font-weight:800;background:linear-gradient(90deg,#6366f1,#06b6d4);color:#fff;cursor:pointer}
+.dash-btn-alt{background:linear-gradient(90deg,#0ea5e9,#22c55e);display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 18px;border-radius:12px;text-decoration:none;color:#fff;font-weight:800}
+.quick-actions{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid #e2e8f0;border-radius:1000px;text-decoration:none;color:#0f172a;background:#fff}
+.chip:hover{background:#eef2ff;border-color:#c7d2fe}
+.dash-results{max-width:980px;margin:14px auto;padding:0 16px}
+.dash-sec-title{margin:0 0 10px;font-weight:800}
+.dash-list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.dash-item{display:flex;gap:6px;align-items:center}
+.dash-link{font-weight:700;color:#1d4ed8;text-decoration:none}
+.dash-link:hover{text-decoration:underline}
+.dash-meta{color:#64748b;font-size:14px}
+.dash-empty{color:#64748b}
+</style>
+{% endblock %}

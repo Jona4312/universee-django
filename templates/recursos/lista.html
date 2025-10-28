@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Biblioteca externa · UniversoE{% endblock %}
+{% block content %}
+
+<section style="max-width:980px;margin:18px auto;padding:0 16px;">
+  <h2 style="margin:0 0 8px;font-weight:900;letter-spacing:-.02em">📚 Biblioteca externa</h2>
+  <p style="color:#64748b;margin:0 0 14px">Busca material de estudio open-access (OpenAlex).</p>
+
+  <form method="get" action="" style="display:flex;gap:8px;margin:0 0 16px;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Ej: base de datos, álgebra lineal, física 1…"
+           style="flex:1;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;font-size:15px">
+    <button type="submit"
+            style="border:0;border-radius:12px;padding:0 18px;height:44px;font-weight:800;background:linear-gradient(90deg,#6366f1,#06b6d4);color:#fff;cursor:pointer">
+      Buscar
+    </button>
+  </form>
+
+  {% if q %}
+    <h3 style="margin:0 0 10px;font-weight:800">Resultados para “{{ q }}”</h3>
+
+    {% if externos %}
+      <div style="display:grid;gap:10px">
+        {% for it in externos %}
+          <article style="border:1px solid #e2e8f0;border-radius:12px;padding:12px;background:#fff">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+              <div>
+                <div style="font-weight:800">
+                  {{ it.title }}
+                </div>
+                <div style="color:#64748b;font-size:14px">
+                  {{ it.source|default:"Open Access" }}{% if it.year %} · {{ it.year }}{% endif %}
+                </div>
+              </div>
+              <a href="{{ it.pdf_url }}" target="_blank" rel="noopener"
+                 style="text-decoration:none;border:0;border-radius:10px;padding:10px 14px;font-weight:800;background:#10b981;color:#fff">
+                Descargar
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color:#64748b">No encontramos PDFs abiertos para esta búsqueda.</p>
+    {% endif %}
+  {% else %}
+    <p style="color:#64748b">Escribe un término arriba para buscar material.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

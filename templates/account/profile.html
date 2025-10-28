@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil · UniversoE{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <div class="row align-items-center mb-5">
+        <div class="col-md-3 text-center">
+            <div style="width: 150px; height: 150px; background-color: #6366f1; color: white; border-radius: 50%; display: grid; place-items: center; font-size: 4rem; font-weight: bold; margin: auto; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);">
+                {{ user.username|first|upper }}
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h1 style="font-weight: 900; letter-spacing: -0.03em; font-size: 3rem;">{{ user.username }}</h1>
+            <p class="text-muted fs-5 mb-1">{{ user.email }}</p>
+            <p class="text-muted fs-5">Miembro de UniversoE desde {{ user.date_joined|date:"F \d\e Y" }}</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title" style="font-size: 3.5rem; font-weight: 900; color: #4f46e5;">{{ total_recursos }}</h2>
+                    <p class="card-text text-muted">Apuntes Subidos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title" style="font-size: 3.5rem; font-weight: 900; color: #4f46e5;">{{ total_threads }}</h2>
+                    <p class="card-text text-muted">Preguntas en el Foro</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title" style="font-size: 3.5rem; font-weight: 900; color: #4f46e5;">{{ total_tutorias }}</h2>
+                    <p class="card-text text-muted">Tutorías Realizadas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h3 class="mb-0">Mi Actividad Reciente</h3>
+                </div>
+                <div class="card-body">
+                    {% if contribuciones_recientes %}
+                        <ul class="list-group list-group-flush">
+                            {% for item in contribuciones_recientes %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                                    {% if item.archivo %}
+                                        <div>
+                                            <a href="{{ item.get_absolute_url }}" class="fw-bold text-decoration-none fs-5">{{ item.titulo }}</a>
+                                            <small class="d-block text-muted">Apunte subido el {{ item.creado_en|date:"d/m/Y" }} en {{ item.ramo.nombre }}</small>
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">{{ item.get_formato_display }}</span>
+                                    {% else %}
+                                        <div>
+                                            <a href="{{ item.get_absolute_url }}" class="fw-bold text-decoration-none fs-5">{{ item.titulo }}</a>
+                                            <small class="d-block text-muted">Pregunta lanzada el {{ item.creado_en|date:"d/m/Y" }}</small>
+                                        </div>
+                                        <span class="badge bg-success rounded-pill">PREGUNTA 🚀</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="text-center p-4">
+                            <p class="mb-2">Aún no has realizado ninguna contribución. ¡Anímate a subir un apunte o lanzar una duda!</p>
+                            <a href="{% url 'recursos_subir' %}" class="btn btn-primary">Subir mi primer apunte</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-sm text-center">
+                <div class="card-body p-4">
+                    <h4 class="card-title">¿Dominas alguna materia?</h4>
+                    <p class="card-text text-muted">Comparte tu conocimiento con la comunidad y conviértete en tutor.</p>
+                    <a href="{% url 'become_tutor' %}" class="btn btn-outline-primary btn-lg">Editar mi Perfil de Tutor 🧑‍🏫</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

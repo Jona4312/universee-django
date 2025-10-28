@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Crear cuenta · UniversoE{% endblock %}
+
+{% block content %}
+<section class="signup-section" style="
+  display:flex;align-items:center;justify-content:center;
+  min-height:calc(100vh - 120px);padding:40px 16px;
+  background:linear-gradient(180deg,#3b82f6,#1e3a8a);
+">
+  <div class="signup-card" style="
+    background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.25);
+    width:100%;max-width:380px;padding:36px 28px;text-align:center;
+  ">
+    <h1 class="signup-title" style="font-size:26px;font-weight:900;color:#1e3a8a;margin-bottom:20px;">
+      Crear cuenta
+    </h1>
+
+    {# Errores de formulario (Django/Allauth) #}
+    {% if form.errors %}
+      <div style="
+        background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;
+        border-radius:10px;padding:14px 14px;margin-bottom:14px;font-size:14px;text-align:left;
+      ">
+        {% for field, errors in form.errors.items %}
+          {% for error in errors %}
+            <div style="margin-bottom:6px;">⚠️ {{ error }}</div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'account_signup' %}" class="signup-form" style="display:grid;gap:12px;text-align:left;">
+      {% csrf_token %}
+
+      <!-- Usuario -->
+      <label for="id_username" style="font-weight:700;font-size:13px;color:#64748b;">Usuario</label>
+      <div style="position:relative;">
+        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.6;">👤</span>
+        <input type="text" name="username" id="id_username" required
+               placeholder="Usuario"
+               value="{{ form.data.username|default:'' }}"
+               style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:8px 12px 8px 36px;font-size:15px;">
+      </div>
+
+      <!-- Correo -->
+      <label for="id_email" style="font-weight:700;font-size:13px;color:#64748b;">
+  Correo electrónico*
+</label>
+<div style="position:relative;">
+  <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.6;">📧</span>
+  <input type="email" name="email" id="id_email" required
+         placeholder="tu@correo.com"
+         value="{{ form.data.email|default:'' }}"
+         style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:8px 12px 8px 36px;font-size:15px;">
+</div>
+
+
+      <!-- Contraseña -->
+      <label for="id_password1" style="font-weight:700;font-size:13px;color:#64748b;">Contraseña</label>
+      <div style="position:relative;">
+        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.6;">🔒</span>
+        <input type="password" name="password1" id="id_password1" required
+               placeholder="••••••••"
+               style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:8px 12px 8px 36px;font-size:15px;">
+      </div>
+
+      <!-- Repite contraseña -->
+      <label for="id_password2" style="font-weight:700;font-size:13px;color:#64748b;">Repite tu contraseña</label>
+      <div style="position:relative;">
+        <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.6;">🔒</span>
+        <input type="password" name="password2" id="id_password2" required
+               placeholder="••••••••"
+               style="width:100%;height:42px;border:1px solid #e5e7eb;border-radius:10px;padding:8px 12px 8px 36px;font-size:15px;">
+      </div>
+
+      <!-- Medidor de contraseña -->
+      <div id="pwd-meter" style="margin-top:6px;">
+        <div class="pwd-bar" style="
+          height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.06);
+        "><span style="display:block;height:100%;width:0;background:linear-gradient(90deg,#ef4444,#f59e0b,#10b981);transition:width .25s ease;"></span></div>
+        <ul class="pwd-rules" style="list-style:none;padding:8px 0 0;margin:0;display:grid;gap:6px;">
+          <li data-rule="len"    style="position:relative;padding-left:22px;font-size:13px;color:#6b7280;">Mínimo 8 caracteres</li>
+          <li data-rule="mix"    style="position:relative;padding-left:22px;font-size:13px;color:#6b7280;">Incluye letras y números</li>
+          <li data-rule="numeric"style="position:relative;padding-left:22px;font-size:13px;color:#6b7280;">No es solo numérica</li>
+          <li data-rule="match"  style="position:relative;padding-left:22px;font-size:13px;color:#6b7280;">Coincide con la repetición</li>
+        </ul>
+      </div>
+
+      <!-- Botones -->
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button id="btn-signup" type="submit" style="
+          flex:1;height:42px;border:none;border-radius:10px;
+          background:linear-gradient(90deg,#4f46e5,#06b6d4);color:#fff;font-weight:700;
+          box-shadow:0 4px 10px rgba(59,130,246,.25);transition:all .2s ease;
+        ">Registrarse</button>
+
+        <a href="{% url 'account_login' %}" style="
+          flex:1;height:42px;border-radius:10px;border:1px solid #d1d5db;background:#f9fafb;
+          font-weight:700;color:#374151;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .2s ease;
+        ">Iniciar sesión</a>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const p1 = document.getElementById('id_password1');
+    const p2 = document.getElementById('id_password2');
+    const meter = document.getElementById('pwd-meter');
+    if (!p1 || !p2 || !meter) return;
+
+    const bar = meter.querySelector('.pwd-bar span');
+    const rulesEls = {
+      len: meter.querySelector('[data-rule="len"]'),
+      mix: meter.querySelector('[data-rule="mix"]'),
+      numeric: meter.querySelector('[data-rule="numeric"]'),
+      match: meter.querySelector('[data-rule="match"]')
+    };
+
+    // Pinta círculo/check
+    function mark(el, ok){
+      el.style.fontWeight = ok ? '700' : '400';
+      el.style.color = ok ? '#065f46' : '#6b7280';
+      el.style.setProperty('--b', ok ? '"✅"' : '"⚪"');
+      // bullet con pseudo simulado:
+      el.style.background = ok ? 'none' : 'none';
+      el.style.setProperty('--icon', ok ? '✅' : '⚪');
+      el.textContent = el.textContent; // noop to force repaint on some browsers
+    }
+
+    function setBullet(el, ok){
+      el.style.setProperty('--i', ok ? '✅' : '⚪');
+      el.style.position = 'relative';
+      el.style.paddingLeft = '22px';
+      if (!el.dataset.bDecorated){
+        el.insertAdjacentHTML('afterbegin','<span class="b" aria-hidden="true" style="position:absolute;left:0;top:0;font-size:14px;opacity:.9;">⚪</span>');
+        el.dataset.bDecorated = '1';
+      }
+      el.querySelector('.b').textContent = ok ? '✅' : '⚪';
+    }
+
+    const rules = {
+      len: v => v.length >= 8,
+      mix: v => /[A-Za-z]/.test(v) && /\d/.test(v),
+      numeric: v => !/^\d+$/.test(v),
+      match: (v) => v.length > 0 && v === p2.value
+    };
+
+    function score(v){
+      let s = 0;
+      if (rules.len(v)) s++;
+      if (rules.mix(v)) s++;
+      if (rules.numeric(v)) s++;
+      if (rules.match(v)) s++;
+      return s;
+    }
+
+    function paint(){
+      const v = p1.value;
+      const S = score(v);
+
+      // barra
+      const level = Math.max(0, Math.min(4, S));
+      bar.style.width = (level*25)+'%';
+
+      // reglas
+      const okLen = rules.len(v);
+      const okMix = rules.mix(v);
+      const okNum = rules.numeric(v);
+      const okMat = rules.match(v);
+
+      setBullet(rulesEls.len, okLen);
+      setBullet(rulesEls.mix, okMix);
+      setBullet(rulesEls.numeric, okNum);
+      setBullet(rulesEls.match, okMat);
+
+      // habilitar/deshabilitar submit
+      const submit = document.getElementById('btn-signup');
+      const can = (S >= 3) && okMat;
+      submit.disabled = !can;
+      submit.style.opacity = can ? '1' : '.6';
+      submit.style.cursor  = can ? 'pointer' : 'not-allowed';
+    }
+
+    p1.addEventListener('input', paint);
+    p2.addEventListener('input', paint);
+    paint();
+  })();
+</script>
+{% endblock %}

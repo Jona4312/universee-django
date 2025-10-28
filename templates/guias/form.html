@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Guía inteligente · UniversoE{% endblock %}
+{% block content %}
+
+<section style="max-width:980px;margin:18px auto;padding:0 16px;">
+  <h2 style="margin:0 0 8px;font-weight:900;letter-spacing:-.02em">🧠 Guía inteligente</h2>
+  <p style="color:#64748b;margin:0 0 14px">Escribe un tema y te generamos una guía con teoría y ejercicios.</p>
+
+  {% if messages %}
+    <div style="display:grid;gap:6px;margin:8px 0 12px">
+      {% for m in messages %}
+      <div style="padding:10px 12px;border-radius:12px;border:1px solid #e2e8f0;background:#fff">{{ m }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="post" action="">
+    {% csrf_token %}
+    <div style="display:grid;gap:10px;max-width:680px">
+      <input type="text" name="tema" placeholder="Ej: Álgebra lineal: matrices y determinantes"
+             style="border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;font-size:15px">
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <select name="nivel" style="border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px">
+          <option>Universitario</option>
+          <option>Media</option>
+          <option>Básica</option>
+        </select>
+
+        <select name="ejercicios" style="border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px">
+          <option value="5">5 ejercicios</option>
+          <option value="8">8 ejercicios</option>
+          <option value="10">10 ejercicios</option>
+        </select>
+      </div>
+
+      <button type="submit"
+              style="border:0;border-radius:12px;padding:0 18px;height:44px;font-weight:800;background:linear-gradient(90deg,#6366f1,#06b6d4);color:#fff;cursor:pointer">
+        Generar guía
+      </button>
+    </div>
+  </form>
+</section>
+
+{% endblock %}

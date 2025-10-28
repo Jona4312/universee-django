@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inicio · UniversoE{% endblock %}
+
+{% block content %}
+
+<section class="hero hero--intro" style="--hero:url('{% static "img/UniversoE.png" %}')">
+  <div class="hero-inner">
+
+    <span class="hero-eyebrow">Comunidad de estudio · Gratis</span>
+
+    <h1 class="hero-title">
+      Bienvenido a <span class="hero-primary-text">UniversoE</span> 🚀
+    </h1>
+
+    <p class="hero-subtitle">
+      El espacio donde estudiantes comparten <strong>recursos</strong>, <strong>apuntes</strong> y <strong>pruebas</strong>,
+      resuelven dudas en el <strong>foro</strong> y conectan con <strong>tutorías</strong>.
+      Aprende, enseña y crece con una comunidad que impulsa el conocimiento.
+    </p>
+
+  </div>
+</section>
+
+
+<!-- Franja de estadísticas -->
+<section class="stats">
+  <div class="stat">
+    <div class="kpi" data-target="1200" data-suffix="K">+0</div>
+    <div class="label">Apuntes verificados</div>
+  </div>
+  <div class="stat">
+    <div class="kpi static">24/7</div>
+    <div class="label">Foro activo</div>
+  </div>
+  <div class="stat">
+    <div class="kpi" data-target="350">+0</div>
+    <div class="label">Tutorías realizadas</div>
+  </div>
+</section>
+
+<!-- Tarjetas de features -->
+<section class="features">
+  <article class="feature">
+    <div class="icon">📘</div>
+    <h4>Recursos y Apuntes</h4>
+    <p>Material de tu carrera, curado por la comunidad.</p>
+  </article>
+  <article class="feature">
+    <div class="icon">💬</div>
+    <h4>Foro de Dudas</h4>
+    <p>Resuelve tus preguntas.Sin drama.</p>
+  </article>
+  <article class="feature">
+    <div class="icon">🧑‍🏫</div>
+    <h4>Tutorías</h4>
+    <p>Clases express con estudiantes o egresados secos.</p>
+  </article>
+</section>
+{% endblock %}

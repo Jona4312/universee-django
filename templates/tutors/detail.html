@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Perfil de {{ tutor_profile.user.first_name|default:tutor_profile.user.username }} · UniversoE{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row g-4 justify-content-center">
+    
+    <div class="col-lg-4">
+      <div class="card shadow-sm sticky-top" style="top: 2rem;">
+        <div class="card-body text-center">
+          
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width:120px; height:120px; font-size:48px;">
+            {{ tutor_profile.user.first_name|first|upper|default:tutor_profile.user.username|first|upper }}
+          </div>
+          
+          <h3 class="fw-bold mt-3 mb-1">{{ tutor_profile.user.first_name|default:tutor_profile.user.username }}</h3>
+          <div class="text-muted mb-3">Tutor Estudiante 🎓</div>
+          
+          <div class="mb-3">
+              {% if tutor_profile.tipo_tutor == 'voluntario' %}
+                  <span class="badge fs-6 bg-success-subtle text-success-emphasis border border-success-subtle">
+                      <i class="bi bi-heart-fill"></i> Ayuda Voluntaria
+                  </span>
+              {% elif tutor_profile.tipo_tutor == 'donacion' %}
+                  <span class="badge fs-6 bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                      <i class="bi bi-cup-hot-fill"></i> Acepta Donaciones
+                  </span>
+              {% elif tutor_profile.tipo_tutor == 'privado' %}
+                  <span class="badge fs-6 bg-info-subtle text-info-emphasis border border-info-subtle">
+                      <i class="bi bi-cash"></i> Tarifa Privada
+                  </span>
+              {% endif %}
+          </div>
+          {% if review_count > 0 %}
+          <div class="h5 mb-3">
+            <span class="text-warning">★</span> 
+            {{ average_rating|floatformat:1 }} 
+            <span class="text-muted small">({{ review_count }} reseña{{ review_count|pluralize:"s" }})</span>
+          </div>
+          {% else %}
+          <div class="text-muted mb-3">(Aún sin reseñas)</div>
+          {% endif %}
+          <div class="d-grid gap-2">
+            <a href="{% url 'request_tutoring' tutor_profile.user.username %}" class="btn btn-primary btn-lg">
+              Solicitar Tutoría 📅
+            </a>
+            
+            {% if tutor_profile.tipo_tutor == 'donacion' and tutor_profile.coffee_link %}
+            <a href="{{ tutor_profile.coffee_link }}" class="btn btn-outline-secondary" target="_blank" rel="noopener noreferrer">
+              ☕ ¡Invítale un café!
+            </a>
+            {% endif %}
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-4 p-md-5">
+          
+          <h4 class="fw-bold mb-3">Sobre mí</h4>
+          <p class="lead">{{ tutor_profile.bio|linebreaksbr|default:"Este tutor aún no ha añadido una biografía." }}</p>
+
+          <hr class="my-4">
+
+          <h4 class="fw-bold mb-3">Materias que domino</h4>
+          <div>
+            {% for materia in materias_list %}
+              {% if materia %} 
+                <span class="badge rounded-pill bg-light text-dark border p-2 me-1 mb-2 fs-6">
+                  {{ materia }}
+                </span>
+              {% endif %}
+            {% empty %}
+              <p class="text-muted mt-2">Este tutor aún no ha especificado sus materias.</p>
+            {% endfor %}
+          </div>
+
+          <hr class="my-4">
+
+          <h4 class="fw-bold mb-3">Reseñas de Estudiantes</h4>
+          
+          {% if user.is_authenticated and user != tutor_profile.user %}
+          <div class="card bg-light border-0 mb-4">
+            <div class="card-body">
+              <h5 class="mb-3">Deja tu reseña</h5>
+              <form method="POST">
+                {% csrf_token %}
+                <div class="mb-2">
+                  <label for="rating" class="form-label">Calificación:</label>
+                  <select name="rating" id="rating" class="form-select" style="max-width: 150px;" required>
+                    <option value="" disabled selected>Elige...</option>
+                    <option value="5">★★★★★ (5)</option>
+                    <option value="4">★★★★☆ (4)</option>
+                    <option value="3">★★★☆☆ (3)</option>
+                    <option value="2">★★☆☆☆ (2)</option>
+                    <option value="1">★☆☆☆☆ (1)</option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label for="comment" class="form-label">Comentario (Opcional):</label>
+                  <textarea name="comment" id="comment" rows="3" class="form-control" placeholder="Describe tu experiencia..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Reseña</button>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+
+          <div>
+            {% for review in reviews %}
+              <div class="d-flex gap-3 mb-4">
+                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width:48px; height:48px; flex-shrink: 0;">
+                  {{ review.student.first_name|first|upper|default:review.student.username|first|upper }}
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-0">{{ review.student.first_name|default:review.student.username }}</h6>
+                  <div class="mb-1">
+                    <span class="text-warning">{% for i in "x"|ljust:review.rating %}★{% endfor %}</span>
+                    <span class="text-muted">{% for i in "x"|ljust:review.rating|add:"-5"|slice:"1:" %}★{% endfor %}</span>
+                  </div>
+                  {% if review.comment %}
+                    <p class="mb-1">{{ review.comment|linebreaksbr }}</p>
+                  {% endif %}
+                  <small class="text-muted">{{ review.created_at|date:"d M, Y" }}</small>
+                </div>
+              </div>
+            {% empty %}
+              <p class="text-muted">Sé el primero en dejar una reseña para este tutor.</p>
+            {% endfor %}
+          </div>
+          </div>
+      </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ room.nombre }} · Sala de Estudio · UniversoE{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <h1 class="fw-bold display-5">{{ room.nombre }}</h1>
+            {% if room.ramo %}
+                <p class="lead text-muted">Sala de estudio para el ramo: <strong>{{ room.ramo.nombre }}</strong></p>
+            {% else %}
+                 <p class="lead text-muted">Sala de estudio temática.</p>
+            {% endif %}
+            <small class="text-muted">
+                Creada por {{ room.creador.username|default:"Usuario" }} el {{ room.creado_en|date:"d M, Y" }}
+                {% if room.es_temporal %} | <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle ms-1">Sesión Temporal ⚡</span>{% endif %}
+            </small>
+        </div>
+        <div class="col-auto d-flex gap-2">
+            {% if room.enlace_videollamada %}
+                <a href="{{ room.enlace_videollamada }}" target="_blank" class="btn btn-danger btn-lg" title="Unirse a Videollamada">
+                    <i class="bi bi-camera-video-fill me-2"></i> Videollamada
+                </a>
+            {% endif %}
+            {% if room.enlace_pizarra %}
+                <a href="{{ room.enlace_pizarra }}" target="_blank" class="btn btn-warning btn-lg" title="Abrir Pizarra Virtual">
+                    <i class="bi bi-pencil-fill me-2"></i> Pizarra
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if room.descripcion %}
+        <div class="card card-body bg-light border-0 shadow-sm mb-4">
+            <h5 class="card-title">Descripción</h5>
+            <p class="mb-0">{{ room.descripcion|linebreaksbr }}</p>
+        </div>
+    {% endif %}
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h4 class="mb-0">Discusión de la Sala</h4>
+        </div>
+        <div class="card-body d-flex flex-column" style="min-height: 500px;">
+
+            <div class="chat-messages flex-grow-1 mb-3" style="overflow-y: auto; max-height: 400px;">
+                {% for message in chat_messages %}
+                    <div class="d-flex mb-2 {% if message.author == user %}justify-content-end{% endif %}">
+                        <div class="card {% if message.author == user %}bg-primary text-white{% else %}bg-light{% endif %}" style="max-width: 75%;">
+                            <div class="card-body p-2">
+                                <strong class="d-block {% if message.author != user %}text-primary{% endif %}">{{ message.author.username|default:"Usuario" }}</strong>
+                                {{ message.content|linebreaksbr }}
+                                <small class="d-block text-end {% if message.author == user %}text-white-50{% else %}text-muted{% endif %} mt-1">
+                                    {{ message.timestamp|date:"H:i" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted text-center mt-5">Aún no hay mensajes. ¡Sé el primero!</p>
+                {% endfor %}
+            </div>
+
+            <form method="post" class="mt-auto pt-3 border-top">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="message_content" class="form-control" placeholder="Escribe tu mensaje..." required autofocus>
+                    <button class="btn btn-primary" type="submit">Enviar</button>
+                </div>
+            </form> 
+            </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Foro Comunitario · UniversoE{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="card shadow-sm mb-4" style="background: linear-gradient(135deg, #6366f1, #06b6d4);">
+        <div class="card-body text-white text-center p-5">
+            <h1 class="card-title" style="font-weight: 900; font-size: 2.5rem;">Foro Comunitario</h1>
+            <p class="lead mb-4">Un espacio para preguntar, responder y aprender juntos.</p>
+            
+            <a href="{% url 'create_forum_thread' %}" class="btn btn-light btn-lg fw-bold">
+                Lanzar Nueva Duda 🚀
+            </a>
+            </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3 class="mb-0">Últimas Discusiones</h3>
+        </div>
+
+        {% if threads %}
+            <ul class="list-group list-group-flush">
+                {% for thread in threads %}
+                    <li class="list-group-item p-3">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+
+                                <a href="{% url 'forum_thread_detail' thread.slug %}" class="text-decoration-none">{{ thread.titulo }}</a>
+                                </h5>
+                            <small class="text-muted">{{ thread.creado_en|timesince }}</small>
+                        </div>
+                        <p class="mb-1 text-muted">
+                            Iniciado por <strong>{{ thread.autor.username }}</strong>
+                            {% if thread.ramo %} en <em>{{ thread.ramo.nombre }}</em>{% endif %}
+                        </p>
+                        <span class="badge rounded-pill bg-secondary fw-normal">
+                            💬 {{ thread.num_replies }} respuestas
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="card-body text-center p-5">
+                <h4 class="card-title">¡El foro está muy silencioso!</h4>
+                <p class="card-text text-muted">Parece que aún no hay ninguna duda. ¡Anímate a ser el primero en lanzar una!</p>
+
+                <a href="{% url 'create_forum_thread' %}" class="btn btn-primary mt-2">
+                    Crear la primera discusión
+                </a>
+                </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

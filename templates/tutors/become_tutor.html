@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Conviértete en Tutor · UniversoE{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 p-md-5"> <h1 class="card-title fw-bold mb-4">🧑‍🏫 ¡Conviértete en Tutor!</h1>
+                    <p class="text-muted mb-4">
+                        ¿Dominas alguna materia? ¡Comparte tu conocimiento con la comunidad! Completa tu perfil para que otros estudiantes puedan encontrarte.
+                    </p>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {{ form.bio|as_crispy_field }}
+                        {{ form.materias|as_crispy_field }}
+                        
+                        {{ form.tipo_tutor|as_crispy_field }}
+                        
+                        {{ form.coffee_link|as_crispy_field }}
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Actualizar y Activar Perfil de Tutor
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Seleccionamos los elementos del formulario
+    // (Crispy Forms envuelve los campos en un div 'div_id_<field_name>')
+    const coffeeLinkGroup = document.getElementById('div_id_coffee_link');
+    
+    // (Crispy Forms da a los radios un name='tipo_tutor')
+    const tipoTutorRadios = document.querySelectorAll('input[name="tipo_tutor"]');
+
+    // 2. Función para mostrar u ocultar el campo de donación
+    function toggleCoffeeLink() {
+        // Buscamos cuál radio está seleccionado
+        const selectedValue = document.querySelector('input[name="tipo_tutor"]:checked').value;
+
+        // Si el valor es 'donacion', mostramos el campo. Si no, lo ocultamos.
+        if (selectedValue === 'donacion') {
+            coffeeLinkGroup.style.display = 'block';
+        } else {
+            coffeeLinkGroup.style.display = 'none';
+        }
+    }
+
+    // 3. Ejecutamos la función una vez al cargar la página (por si el valor ya estaba guardado)
+    toggleCoffeeLink();
+
+    // 4. Añadimos un "listener" para que la función se ejecute CADA VEZ que el usuario cambie la opción
+    tipoTutorRadios.forEach(radio => {
+        radio.addEventListener('change', toggleCoffeeLink);
+    });
+
+});
+</script>
+{% endblock %}

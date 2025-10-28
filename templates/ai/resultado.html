@@ -1,0 +1,12 @@
+<div class="card shadow-sm mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Resultado</h3>
+        
+        <a href="{% url 'guia_descargar_pdf' %}" id="download-pdf-btn" class="btn btn-success">
+            Descargar PDF
+        </a>
+    </div>
+    <div class="card-body">
+        <textarea id="guide-content-textarea" class="form-control" readonly style="height: 450px; white-space: pre-wrap; font-size: 0.9rem;">{{ result }}</textarea>
+    </div>
+</div>

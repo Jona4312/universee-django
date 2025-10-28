@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Salas de Estudio · UniversoE{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <h1 class="fw-bold display-5">🛋️ Salas de Estudio</h1>
+            <p class="lead text-muted">Encuentra o crea un grupo para estudiar temas específicos.</p>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="collapse" data-bs-target="#createRoomForm" aria-expanded="false" aria-controls="createRoomForm">
+                Crear Nueva Sala ✨
+            </button>
+        </div>
+    </div>
+
+    <div class="collapse mb-4" id="createRoomForm">
+        <div class="card card-body shadow-sm border-0 bg-light">
+            <h3 class="mb-3">Nueva Sala de Estudio</h3>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-success mt-3">Crear Sala</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for room in study_rooms %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold">
+                        <a href="{{ room.get_absolute_url }}" class="text-decoration-none">
+                            {{ room.nombre }}
+                        </a>
+                        {% if room.es_temporal %}
+                            <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle ms-2" title="Sesión Temporal">
+                                Rápida ⚡
+                            </span>
+                        {% endif %}
+                    </h5>
+                    
+                    {% if room.ramo %}
+                        <p class="card-subtitle mb-2 text-muted">
+                            <small>Ramo: {{ room.ramo.nombre }}</small>
+                        </p>
+                    {% endif %}
+                    
+                    <p class="card-text flex-grow-1">
+                        {{ room.descripcion|truncatewords:20|default:"(Sin descripción)" }}
+                    </p>
+                    
+                    <small class="text-muted">
+                        Creada por {{ room.creador.username|default:"Usuario" }} el {{ room.creado_en|date:"d M, Y" }}
+                    </small>
+                    
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <a href="{{ room.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+                            Entrar a la Sala →
+                        </a>
+                        <div>
+                            {% if room.enlace_videollamada %}
+                                <a href="{{ room.enlace_videollamada }}" target="_blank" class="btn btn-sm btn-danger" title="Unirse a Videollamada">
+                                    <i class="bi bi-camera-video-fill"></i> </a>
+                            {% endif %}
+                            {% if room.enlace_pizarra %}
+                                <a href="{{ room.enlace_pizarra }}" target="_blank" class="btn btn-sm btn-warning ms-1" title="Abrir Pizarra Virtual">
+                                    <i class="bi bi-pencil-fill"></i> </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card card-body text-center p-5">
+                <h5 class="text-muted">Aún no hay salas de estudio activas.</h5>
+                <p class="text-muted">¡Anímate a crear la primera!</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

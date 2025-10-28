@@ -1,0 +1,61 @@
+/* ========= Diseño base y paleta ========= */
+:root{
+  --bg-0:#f6f8fb;        /* fondo base claro */
+  --bg-1:#eef2f7;        /* fondo degradado */
+  --ink:#0f172a;         /* texto principal (slate-900) */
+  --muted:#475569;       /* texto secundario (slate-600) */
+  --surface:#ffffff;     /* tarjetas / nav */
+  --border:#e5e7eb;      /* bordes sutiles */
+  --brand:#111827;       /* negro suave */
+  --accent:#4f46e5;      /* indigo 600 */
+  --accent-ink:#ffffff;  /* texto sobre acentos */
+}
+
+/* Tipografía global */
+body{
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color:var(--ink);
+  /* Fondo con tres capas: degradado + halos sutiles */
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(79,70,229,.12), transparent 60%),
+    radial-gradient(900px 500px at 0% 0%, rgba(2,132,199,.10), transparent 60%),
+    linear-gradient(var(--bg-0), var(--bg-1));
+  min-height:100vh;
+  margin:0;
+}
+
+/* ====== Componentes reutilizables ====== */
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--accent);color:var(--accent-ink);
+  padding:.625rem 1rem;border-radius:12px;font-weight:600;
+  transition:transform .06s ease, filter .2s ease;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(1px)}
+
+.btn-outline{
+  display:inline-flex;align-items:center;gap:.5rem;
+  border:1px solid var(--accent); color:var(--accent);
+  background:transparent;
+  padding:.625rem 1rem;border-radius:12px;font-weight:600;
+}
+.btn-outline:hover{background:rgba(79,70,229,.06)}
+
+.nav-link{font-weight:600;color:#4b5563}
+.nav-link:hover{color:var(--ink)}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 1px 2px rgba(15,23,42,.06);
+}
+
+/* utilitarios */
+.text-muted{color:var(--muted)}
+/* Hero background smoother blur fix */
+img[alt="UniversoE Banner"]{
+  filter: brightness(1.05) saturate(1.05);
+}

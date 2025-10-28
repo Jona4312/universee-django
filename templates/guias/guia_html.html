@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 12pt; color:#111; }
+    h1,h2,h3 { margin: 0.3em 0; }
+    .muted { color:#555; font-size: 10pt; }
+    .badge { display:inline-block;padding:2px 6px;border:1px solid #ddd;border-radius:8px; }
+    .section { margin: 10px 0 14px; }
+    ol, ul { margin: 0.2em 0 0.2em 1.2em; }
+    hr { border:0;border-top:1px solid #eee;margin:14px 0; }
+  </style>
+</head>
+<body>
+  <h1>Guía de estudio: {{ tema }}</h1>
+  <div class="muted">Nivel: <span class="badge">{{ nivel }}</span></div>
+  <hr>
+  <div class="section">
+    {{ contenido|linebreaksbr }}
+  </div>
+  <hr>
+  <div class="muted">Generado por UniversoE · {{ autor }}</div>
+</body>
+</html>

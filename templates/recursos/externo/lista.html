@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Biblioteca externa · UniversoE{% endblock %}
+{% block content %}
+
+<section style="max-width:980px;margin:18px auto;padding:0 16px;">
+  <h2 style="margin:0 0 8px;font-weight:900;letter-spacing:-.02em">📚 Biblioteca externa</h2>
+  <p style="color:#64748b;margin:0 0 14px">
+    Busca material de estudio open-access o PDFs en la web (Google/Bing).
+  </p>
+
+  <form method="get" action="">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input type="text" name="q" value="{{ q }}" placeholder="Ej: dosimetría clínica radioterapia…"
+             style="flex:1;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;font-size:15px">
+
+      <select name="lang" style="border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px">
+        <option value="es" {% if lang == 'es' %}selected{% endif %}>Solo español</option>
+        <option value="all" {% if lang == 'all' %}selected{% endif %}>Cualquier idioma</option>
+      </select>
+
+      <label style="display:inline-flex;gap:6px;align-items:center">
+        <input type="checkbox" name="strict" value="1" {% if strict == '1' %}checked{% endif %}>
+        Solo este idioma
+      </label>
+
+      <label style="display:inline-flex;gap:6px;align-items:center">
+        <input type="checkbox" name="src_web" value="1" {{ src_web_checked }}>
+        Web (Google/Bing)
+      </label>
+
+      <button type="submit"
+              style="border:0;border-radius:12px;padding:0 18px;height:44px;font-weight:800;background:linear-gradient(90deg,#6366f1,#06b6d4);color:#fff;cursor:pointer">
+        Buscar
+      </button>
+    </div>
+  </form>
+
+  {# ---- NUEVO: si la API devuelve error, lo mostramos ---- #}
+  {% if web_error %}
+    <div style="margin-top:12px;padding:10px 12px;border-radius:12px;border:1px solid #fecaca;background:#fef2f2;color:#991b1b">
+      <b>Aviso:</b> {{ web_error }}
+    </div>
+  {% endif %}
+
+  {% if web_disabled %}
+    <div style="margin-top:12px;padding:10px 12px;border-radius:12px;border:1px solid #fde68a;background:#fffbeb;color:#92400e">
+      La búsqueda web está desactivada porque faltan claves.
+      Configura <code>GOOGLE_CSE_ID</code> + <code>GOOGLE_API_KEY</code> o <code>BING_SUBSCRIPTION_KEY</code> y reinicia el servidor.
+    </div>
+  {% endif %}
+
+  {% if q %}
+    <h3 style="margin:14px 0 10px;font-weight:800">Resultados para “{{ q }}”</h3>
+
+    {% if externos %}
+      <div style="display:grid;gap:10px">
+        {% for it in externos %}
+          <article style="border:1px solid #e2e8f0;border-radius:12px;padding:12px;background:#fff">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+              <div>
+                <div style="font-weight:800">{{ it.title }}</div>
+                <div style="color:#64748b;font-size:14px">{{ it.source }}</div>
+              </div>
+              <a href="{{ it.pdf_url }}" target="_blank" rel="noopener"
+                 style="text-decoration:none;border:0;border-radius:10px;padding:10px 14px;font-weight:800;background:#10b981;color:#fff">
+                Descargar
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color:#64748b">No encontramos PDFs abiertos para esta búsqueda con los filtros actuales.</p>
+    {% endif %}
+  {% else %}
+    <p style="color:#64748b">Escribe un término arriba, marca “Web (Google/Bing)” y busca.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

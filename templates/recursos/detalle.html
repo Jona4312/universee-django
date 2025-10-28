@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ recurso.titulo }} · UniversoE{% endblock %}
+
+{% block content %}
+<article class="r-detail" style="max-width:980px;margin:18px auto;padding:0 16px">
+  <h2 style="margin:0 0 6px">{{ recurso.titulo }}</h2>
+  <p class="r-path" style="color:#64748b;margin:0 0 10px">
+    {{ recurso.area.nombre }} › {{ recurso.carrera.nombre }} › {{ recurso.ramo.nombre }}
+  </p>
+
+  {% if recurso.descripcion %}
+    <p class="r-desc" style="margin:0 0 12px">{{ recurso.descripcion }}</p>
+  {% endif %}
+
+  <a class="btn btn-primary"
+     href="{% url 'recurso_descargar' recurso.pk %}"
+     style="display:inline-block;text-decoration:none;border:0;border-radius:10px;padding:10px 14px;font-weight:800;background:#1e293b;color:#fff">
+    Descargar
+  </a>
+  <div style="margin-top:10px;color:#64748b;font-size:14px">
+    Descargas: {{ recurso.descargas }}
+  </div>
+</article>
+{% endblock %}
